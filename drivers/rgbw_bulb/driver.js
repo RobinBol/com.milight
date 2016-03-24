@@ -372,14 +372,22 @@ function setDim(active_device, dim, callback) {
 			// Matching group found
 			if (active_device.group == device.group) {
 
-				// Send on and brightness commands
-				device.bridge.sendCommands(commands.rgbw.on(device.group), commands.rgbw.brightness(dim * 100));
+				if(dim < 0.1) {
 
-				// Save the new dim level
-				device.dim = dim;
+					// Send off command
+					device.bridge.sendCommands(commands.rgbw.off(device.group));
 
-				// Return dim level
-				callback(null, device.dim);
+				} else {
+
+					// Send on and brightness commands
+					device.bridge.sendCommands(commands.rgbw.on(device.group), commands.rgbw.brightness(dim * 100));
+
+					// Save the new dim level
+					device.dim = dim;
+
+					// Return dim level
+					callback(null, device.dim);
+				}
 			}
 			else {
 				callback(true, false);
